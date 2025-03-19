@@ -8,15 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @RestController
 public class Application {
+
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-	// A simple public endpoint that returns "Hello world"
 	@GetMapping("/")
-	public String apiRoot(){
+	public String apiRoot() {
 		return "Hello world";
 	}
 }
-
-
