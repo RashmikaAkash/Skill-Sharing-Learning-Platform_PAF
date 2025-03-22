@@ -14,24 +14,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfig {
 
-    // Define the security filter chain that configures HTTP security
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
                 .authorizeHttpRequests(authz -> authz
-                        // Allow public access to the root endpoint ("/")
-                        .requestMatchers("/").permitAll()
-                        // All other requests require authentication
+                        .requestMatchers("/", "/api/users/**").permitAll() // Allow public access to "/api/users"
                         .anyRequest().authenticated()
                 )
-                // Enable form-based login with default settings
                 .formLogin(Customizer.withDefaults())
-                // Enable HTTP Basic authentication
                 .httpBasic(Customizer.withDefaults());
+
         return http.build();
     }
 
-    // Define an in-memory user store with a single user
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
@@ -44,7 +40,6 @@ public class SecurityConfig {
         return manager;
     }
 
-    // Define the password encoder bean (using BCrypt)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
