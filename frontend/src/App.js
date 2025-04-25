@@ -7,8 +7,8 @@ import CourseCard from "./pages/CourseCard";
 import Comment from "./pages/Comment";
 import Layout from './components/Layout/Layout';
 import ProfileView from './pages/ProfileView';
-import UserForm from './pages/UserForm';
 import SkillsPage from './pages/SkillsPage';
+import Login from './pages/Login';
 import './App.css';
 
 
@@ -21,7 +21,8 @@ const App = () => {
                 <Route path="/user" element={<UserForm />} />
                 <Route path="/" element={<SkillSharingPlatform />} />
                 <Route path="/course" element={<CourseCard />} />
-                <Route path="/comment" element={<Comment />} />
+                
+                <Route path="/login" element={<Login />} />
                 
                 {/* Protected Routes */}
                 <Route
@@ -33,6 +34,7 @@ const App = () => {
                                     <Route path="/" element={<SkillSharingPlatform />} />
                                     <Route path="/profile" element={<ProfileView />} />
                                     <Route path="/skills" element={<SkillsPage />} />
+                                    <Route path="/comment" element={<Comment />} />
                                     {/* Add more routes here */}
                                 </Routes>
                             </Layout>

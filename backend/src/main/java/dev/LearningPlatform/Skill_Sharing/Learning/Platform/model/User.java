@@ -1,21 +1,28 @@
 package dev.LearningPlatform.Skill_Sharing.Learning.Platform.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "users")  // Collection name in MongoDB
+@Document(collection = "users")
 public class User {
 
     @Id
     private String id;
+
     private String name;
+
     private String username;
-    
+
     @Indexed(unique = true)
     private String email;
-    
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
     private int age;
+
     private String location;
     private String bio;
     private String profilePhotoUrl;
@@ -24,10 +31,12 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(String name, String username, String email, int age, String location, String bio) {
+    public User(String name, String username, String email, String password,
+                int age, String location, String bio) {
         this.name = name;
         this.username = username;
         this.email = email;
+        this.password = password;
         this.age = age;
         this.location = location;
         this.bio = bio;
@@ -64,6 +73,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getAge() {

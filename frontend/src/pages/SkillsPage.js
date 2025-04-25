@@ -7,7 +7,7 @@ import './SkillsPage.css';
 const SkillsPage = () => {
     const [skills, setSkills] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
     const [newSkill, setNewSkill] = useState({
         name: '',
