@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -17,13 +18,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Disable CSRF for APIs
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for API
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/api/users/**").permitAll() // Allow public access to "/api/users"
+                        // Allow all OPTIONS requests (for CORS preflight)
+                        .requestMatchers(new AntPathRequestMatcher("/**", "OPTIONS")).permitAll()
+                        // Public endpoints
+                        .requestMatchers("/", "/api/users/**", "/api/comments/**").permitAll()
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()); // Enable CORS
 
         return http.build();
     }
