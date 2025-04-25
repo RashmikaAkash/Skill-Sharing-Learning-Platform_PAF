@@ -32,29 +32,31 @@ public class UserService {
     }
 
     public User updateUser(String id, User userDetails) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            
-            // Check if email is being changed and if it already exists
-            if (!user.getEmail().equals(userDetails.getEmail())) {
-                if (userRepository.findByEmail(userDetails.getEmail()).isPresent()) {
-                    throw new DuplicateKeyException("Email already exists");
-                }
+        Optional<User> existingUserOpt = userRepository.findById(id);
+
+        if (existingUserOpt.isEmpty()) return null;
+
+        User user = existingUserOpt.get();
+
+        // Check email conflict if changing
+        if (userDetails.getEmail() != null && !user.getEmail().equals(userDetails.getEmail())) {
+            if (userRepository.findByEmail(userDetails.getEmail()).isPresent()) {
+                throw new DuplicateKeyException("Email already exists");
             }
-            
-            user.setName(userDetails.getName());
-            user.setUsername(userDetails.getUsername());
             user.setEmail(userDetails.getEmail());
-            user.setAge(userDetails.getAge());
-            user.setLocation(userDetails.getLocation());
-            user.setBio(userDetails.getBio());
-            user.setProfilePhotoUrl(userDetails.getProfilePhotoUrl());
-            user.setCoverPhotoUrl(userDetails.getCoverPhotoUrl());
-            
-            return userRepository.save(user);
         }
-        return null;
+
+        // Update only non-null fields
+        if (userDetails.getName() != null) user.setName(userDetails.getName());
+        if (userDetails.getUsername() != null) user.setUsername(userDetails.getUsername());
+        if (userDetails.getPassword() != null) user.setPassword(userDetails.getPassword());
+        if (userDetails.getAge() != 0) user.setAge(userDetails.getAge());
+        if (userDetails.getLocation() != null) user.setLocation(userDetails.getLocation());
+        if (userDetails.getBio() != null) user.setBio(userDetails.getBio());
+        if (userDetails.getProfilePhotoUrl() != null) user.setProfilePhotoUrl(userDetails.getProfilePhotoUrl());
+        if (userDetails.getCoverPhotoUrl() != null) user.setCoverPhotoUrl(userDetails.getCoverPhotoUrl());
+
+        return userRepository.save(user);
     }
 
     public void deleteUser(String id) {
