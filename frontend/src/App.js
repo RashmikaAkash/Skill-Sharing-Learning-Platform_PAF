@@ -1,11 +1,16 @@
-import React from 'react';
+
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import UserForm from "./pages/UserForm";
+import SkillSharingPlatform from "./pages/SkillSharingPlatform";
+import CourseCard from "./pages/CourseCard";
+import Comment from "./pages/Comment";
 import Layout from './components/Layout/Layout';
 import ProfileView from './pages/ProfileView';
 import UserForm from './pages/UserForm';
 import SkillsPage from './pages/SkillsPage';
-import SkillSharingPlatform from './pages/SkillSharingPlatform';
 import './App.css';
+
 
 const App = () => {
     const isAuthenticated = !!localStorage.getItem('userEmail');
@@ -13,14 +18,10 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route 
-                    path="/login" 
-                    element={
-                        isAuthenticated ? 
-                            <Navigate to="/" replace /> : 
-                            <UserForm />
-                    } 
-                />
+                <Route path="/user" element={<UserForm />} />
+                <Route path="/" element={<SkillSharingPlatform />} />
+                <Route path="/course" element={<CourseCard />} />
+                <Route path="/comment" element={<Comment />} />
                 
                 {/* Protected Routes */}
                 <Route
