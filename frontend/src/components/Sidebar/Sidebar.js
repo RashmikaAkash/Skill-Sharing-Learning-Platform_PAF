@@ -18,6 +18,8 @@ const Sidebar = () => {
         { path: '/calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
         { path: '/resources', icon: 'fas fa-folder', label: 'Resources' },
         { path: '/settings', icon: 'fas fa-cog', label: 'Settings' },
+        { path: '/share-post', icon: 'fas fa-share-alt', label: 'Share Post' },
+        { path: '/manage-posts', icon: 'fas fa-tasks', label: 'Manage Posts' } // New menu item
     ];
 
     return (
