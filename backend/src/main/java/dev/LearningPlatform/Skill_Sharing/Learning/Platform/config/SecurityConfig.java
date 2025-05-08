@@ -1,5 +1,4 @@
 package dev.LearningPlatform.Skill_Sharing.Learning.Platform.config;
-
 import dev.LearningPlatform.Skill_Sharing.Learning.Platform.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +34,7 @@ public class SecurityConfig {
           .authorizeHttpRequests(auth -> auth
               .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
               .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-              .requestMatchers("/", "/api/users/**", "/api/comments/**").permitAll()
+              .requestMatchers("/", "/api/users/**", "/api/comments/**", "/api/posts/**").permitAll()
               .anyRequest().authenticated()
           )
           .addFilterBefore(
