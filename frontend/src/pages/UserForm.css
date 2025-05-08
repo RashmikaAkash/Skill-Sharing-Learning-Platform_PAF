@@ -68,4 +68,13 @@
 .submit-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
-} 
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
