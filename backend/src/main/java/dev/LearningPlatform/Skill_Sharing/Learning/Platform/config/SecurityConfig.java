@@ -1,51 +1,57 @@
 package dev.LearningPlatform.Skill_Sharing.Learning.Platform.config;
 
-
-
+import dev.LearningPlatform.Skill_Sharing.Learning.Platform.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private CorsConfigurationSource corsConfigurationSource;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for API
-                .authorizeHttpRequests(authz -> authz
-                        // Allow all OPTIONS requests (for CORS preflight)
-                        .requestMatchers(new AntPathRequestMatcher("/**", "OPTIONS")).permitAll()
-                        // Public endpoints
-                        .requestMatchers("/", "/api/users/**", "/api/comments/**").permitAll()
-                        // Everything else requires authentication
-                        .anyRequest().authenticated()
-                )
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
-                .cors(Customizer.withDefaults()); // Enable CORS
-
+          .cors(cors -> cors.configurationSource(corsConfigurationSource))
+          .csrf(cs -> cs.disable())
+          .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .authorizeHttpRequests(auth -> auth
+              .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+              .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+              .requestMatchers("/", "/api/users/**", "/api/comments/**").permitAll()
+              .anyRequest().authenticated()
+          )
+          .addFilterBefore(
+              new JwtAuthenticationFilter(jwtUtil, userDetailsService),
+              org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
+          );
         return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(
-                User.withUsername("user")
-                        .password(encoder.encode("password"))
-                        .roles("USER")
-                        .build()
-        );
-        return manager;
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                   .userDetailsService(userDetailsService)
+                   .passwordEncoder(passwordEncoder())
+                   .and()
+                   .build();
     }
 
     @Bean
