@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SkillshareLogin() {
   const navigate = useNavigate();
@@ -159,7 +159,10 @@ export default function SkillshareLogin() {
           </a>
 
           <p style={styles.signupPrompt}>
-            Not a member yet? <a href=" " style={styles.signupLink}>Sign Up.</a>
+            Not a member yet?{' '}
+            <Link to="/user" style={styles.signupLink}>
+              Sign Up.
+            </Link>
           </p>
         </form>
       </div>
