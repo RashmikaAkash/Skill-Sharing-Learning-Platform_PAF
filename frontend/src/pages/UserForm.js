@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { createUser } from "../api";
+import Swal from "sweetalert2";
 import "./UserForm.css";
 
 const UserForm = () => {
@@ -15,8 +16,8 @@ const UserForm = () => {
         coverPhoto: null
     });
 
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const [setError] = useState("");
+    const [setSuccess] = useState("");
     const [preview, setPreview] = useState({
         profilePhoto: null,
         coverPhoto: null
@@ -56,6 +57,12 @@ const UserForm = () => {
             localStorage.setItem("userEmail", user.email);
             setSuccess("Profile Created Successfully!");
 
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Profile Created Successfully!",
+            });
+
             setUser({
                 name: "",
                 username: "",
@@ -77,27 +84,31 @@ const UserForm = () => {
 
         } catch (error) {
             console.error("Error details:", error);
+            let errorMessage = "Error creating profile. Please try again.";
             if (error.response) {
                 if (error.response.status === 409) {
-                    setError("This email is already registered. Please use a different email.");
+                    errorMessage = "This email is already registered. Please use a different email.";
                 } else if (error.response.data?.message) {
-                    setError(error.response.data.message);
+                    errorMessage = error.response.data.message;
                 } else {
-                    setError(`Server error: ${error.response.status}. Please try again.`);
+                    errorMessage = `Server error: ${error.response.status}. Please try again.`;
                 }
             } else if (error.request) {
-                setError("No response from server. Please check your internet connection.");
-            } else {
-                setError("Error creating profile. Please try again.");
+                errorMessage = "No response from server. Please check your internet connection.";
             }
+
+            setError(errorMessage);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: errorMessage,
+            });
         }
     };
 
     return (
         <div className="profile-form-container">
             <h2>Create Your Profile</h2>
-            {error && <div className="error-message">{error}</div>}
-            {success && <div className="success-message">{success}</div>}
 
             <form onSubmit={handleSubmit} className="profile-form">
                 <div className="form-group">
