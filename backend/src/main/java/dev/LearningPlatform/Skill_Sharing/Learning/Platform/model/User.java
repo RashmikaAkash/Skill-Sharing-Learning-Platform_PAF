@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection = "users")
 public class User {
 
@@ -28,11 +30,21 @@ public class User {
     private String profilePhotoUrl;
     private String coverPhotoUrl;
 
-    // Constructors
+    // Roles for Spring Security
+    private List<String> roles;
+
+    // Default constructor
     public User() {}
 
+    // Constructor without roles: defaults to ROLE_USER
     public User(String name, String username, String email, String password,
                 int age, String location, String bio) {
+        this(name, username, email, password, age, location, bio, List.of("ROLE_USER"));
+    }
+
+    // Full constructor
+    public User(String name, String username, String email, String password,
+                int age, String location, String bio, List<String> roles) {
         this.name = name;
         this.username = username;
         this.email = email;
@@ -40,6 +52,7 @@ public class User {
         this.age = age;
         this.location = location;
         this.bio = bio;
+        this.roles = roles;
     }
 
     // Getters & Setters
@@ -121,5 +134,13 @@ public class User {
 
     public void setCoverPhotoUrl(String coverPhotoUrl) {
         this.coverPhotoUrl = coverPhotoUrl;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }
