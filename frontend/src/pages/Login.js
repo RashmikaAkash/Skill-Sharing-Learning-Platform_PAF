@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link} from 'react-router-dom';
 
 export default function SkillshareLogin() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [buttonHover, setButtonHover] = useState(null);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('');    
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
@@ -16,18 +17,29 @@ export default function SkillshareLogin() {
     e.preventDefault();
     setError(null);
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (_) {}
+
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.error || data.message || 'Login failed');
       }
-      const { token } = await response.json();
+
+      const token = data.token;
+      if (!token) {
+        throw new Error('No token returned');
+      }
+
       localStorage.setItem('jwtToken', token);
-      window.location.href = '/dashboard';
+      window.location.href = '/';
+      
     } catch (err) {
       setError(err.message);
     }
@@ -89,11 +101,13 @@ export default function SkillshareLogin() {
             >
               <input
                 type={field}
-                placeholder={field === 'email' ? 'Email address' : 'Password'}
+                placeholder={field === 'email' ? 'Email' : 'Password'}
                 id={field}
                 value={field === 'email' ? email : password}
-                onChange={(e) =>
-                  field === 'email' ? setEmail(e.target.value) : setPassword(e.target.value)
+                onChange={e =>
+                  field === 'email'
+                    ? setEmail(e.target.value)
+                    : setPassword(e.target.value)
                 }
                 style={{
                   ...styles.input,
@@ -106,7 +120,7 @@ export default function SkillshareLogin() {
               />
               {focusedInput === field && (
                 <div style={styles.floatingLabel}>
-                  {field === 'email' ? 'Email address' : 'Password'}
+                  {field === 'email' ? 'Email' : 'Password'}
                 </div>
               )}
             </div>
@@ -121,10 +135,12 @@ export default function SkillshareLogin() {
 
           <button
             type="submit"
+            disabled={!email || !password}
             style={{
               ...styles.signInButton,
+              opacity: (!email || !password) ? 0.6 : 1,
+              pointerEvents: (!email || !password) ? 'none' : 'auto',
               transform: isLoaded ? 'translateY(0)' : 'translateY(20px)',
-              opacity: isLoaded ? 1 : 0,
               transition: 'transform 0.6s ease-out 1s, opacity 0.6s ease-out 1s',
               boxShadow:
                 buttonHover === 'signin'
@@ -142,7 +158,10 @@ export default function SkillshareLogin() {
           </a>
 
           <p style={styles.signupPrompt}>
-            Not a member yet? <a href=" " style={styles.signupLink}>Sign Up.</a>
+            Not a member yet?{' '}
+            <Link to="/user" style={styles.signupLink}>
+              Sign Up.
+            </Link>
           </p>
         </form>
       </div>
