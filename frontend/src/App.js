@@ -19,9 +19,7 @@ const App = () => {
         <Router>
             <Routes>
                 <Route path="/user" element={<UserForm />} />
-                <Route path="/" element={<SkillSharingPlatform />} />
                 <Route path="/course" element={<CourseCard />} />
-                
                 <Route path="/login" element={<Login />} />
                 
                 {/* Protected Routes */}
