@@ -1,7 +1,5 @@
 package dev.LearningPlatform.Skill_Sharing.Learning.Platform.config;
 
-
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -25,12 +23,12 @@ public class SecurityConfig {
                         // Allow all OPTIONS requests (for CORS preflight)
                         .requestMatchers(new AntPathRequestMatcher("/**", "OPTIONS")).permitAll()
                         // Public endpoints
-                        .requestMatchers("/", "/api/users/**", "/api/comments/**").permitAll()
+                        .requestMatchers("/", "/api/users/**", "/api/comments/**", "/api/posts/**").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults()) // Enable form login
+                .httpBasic(Customizer.withDefaults()) // Enable basic authentication
                 .cors(Customizer.withDefaults()); // Enable CORS
 
         return http.build();
@@ -43,6 +41,12 @@ public class SecurityConfig {
                 User.withUsername("user")
                         .password(encoder.encode("password"))
                         .roles("USER")
+                        .build()
+        );
+        manager.createUser(
+                User.withUsername("admin")
+                        .password(encoder.encode("admin"))
+                        .roles("ADMIN")
                         .build()
         );
         return manager;
