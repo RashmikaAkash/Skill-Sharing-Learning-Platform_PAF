@@ -9,6 +9,8 @@ import Layout from './components/Layout/Layout';
 import ProfileView from './pages/ProfileView';
 import SkillsPage from './pages/SkillsPage';
 import Login from './pages/Login';
+import SharePost from "./pages/SharePost";
+import ManagePosts from "./pages/ManagePosts";
 import './App.css';
 
 
@@ -33,6 +35,8 @@ const App = () => {
                                     <Route path="/profile" element={<ProfileView />} />
                                     <Route path="/skills" element={<SkillsPage />} />
                                     <Route path="/comment" element={<Comment />} />
+                                    <Route path="/share-post" element={<SharePost />} />
+                                    <Route path="/manage-posts" element={<ManagePosts />} />
                                     {/* Add more routes here */}
                                 </Routes>
                             </Layout>
