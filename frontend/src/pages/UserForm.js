@@ -16,8 +16,9 @@ const UserForm = () => {
         coverPhoto: null
     });
 
-    const [setError] = useState("");
-    const [setSuccess] = useState("");
+    const [error, setError]     = useState("");
+const [success, setSuccess] = useState("");
+
     const [preview, setPreview] = useState({
         profilePhoto: null,
         coverPhoto: null
