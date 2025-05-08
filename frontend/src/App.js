@@ -13,7 +13,7 @@ import './App.css';
 
 
 const App = () => {
-    const isAuthenticated = !!localStorage.getItem('userEmail');
+    const isAuthenticated = !!localStorage.getItem('jwtToken');
 
     return (
         <Router>
