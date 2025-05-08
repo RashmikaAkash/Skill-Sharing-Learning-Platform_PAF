@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 
 export default function SkillshareLogin() {
-  const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [buttonHover, setButtonHover] = useState(null);
