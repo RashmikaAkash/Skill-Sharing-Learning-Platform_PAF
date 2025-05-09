@@ -10,6 +10,7 @@ public class Comment {
 
     @Id
     private String id;
+    private String postId;   
     private String author;
     private String avatarUrl;
     private Instant createdAt;
@@ -28,8 +29,9 @@ public class Comment {
     }
 
     // Constructor for initial comment
-    public Comment(String author, String avatarUrl, String content, boolean verified) {
+    public Comment(String postId, String author, String avatarUrl, String content, boolean verified) {
         this();
+        this.postId = postId;
         this.author = author;
         this.avatarUrl = avatarUrl;
         this.content = content;
@@ -39,14 +41,18 @@ public class Comment {
     }
 
     // Constructor for replies
-    public Comment(String author, String avatarUrl, String content, boolean verified, String replyTo) {
-        this(author, avatarUrl, content, verified);
+    public Comment(String postId,String author, String avatarUrl, String content, boolean verified, String replyTo) {
+        this(postId, author, avatarUrl, content, verified);
         this.reply = true;
         this.replyTo = replyTo; // Set parent comment ID for the reply
     }
 
     // Getters & Setters
 
+    public String getPostId() { return postId; }
+
+    public void setPostId(String postId) { this.postId = postId; }
+    
     public String getId() {
         return id;
     }
