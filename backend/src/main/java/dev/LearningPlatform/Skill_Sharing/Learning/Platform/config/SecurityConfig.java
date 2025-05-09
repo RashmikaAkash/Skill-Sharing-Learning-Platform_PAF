@@ -81,6 +81,8 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
       // **PUBLIC: registration endpoint**
       .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 
+      .requestMatchers(HttpMethod.POST, "/api/enrollments").permitAll()
+
       // login
       .requestMatchers("/api/auth/login").permitAll()
 
