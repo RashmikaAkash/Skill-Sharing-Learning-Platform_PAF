@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const api = axios.create({
-  baseURL: 'http://localhost:8080/api/comments',
-});
-
-const CommentSection = () => {
+// ← Destructure postId from props here
+const Comment = ({ postId }) => {
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -17,25 +14,39 @@ const CommentSection = () => {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
+  const api = axios.create({
+    baseURL: 'http://localhost:8080/api/comments',
+  });
+
   useEffect(() => {
+    if (!postId) return;
+
     const fetchComments = async () => {
       try {
-        const { data } = await api.get();
-        const processedComments = data.map(comment => ({
-          ...comment,
-          replies: comment.replies || []
+        const { data } = await api.get(`/post/${postId}`);
+        const processed = data.map(c => ({
+          ...c,
+          replies: c.replies || []
         }));
-        setComments(processedComments);
+        setComments(processed);
       } catch (err) {
         setError('Failed to load comments');
         console.error(err);
         Swal.fire('Error', 'Failed to load comments', 'error');
       }
     };
+
     fetchComments();
-    const storedReplies = JSON.parse(localStorage.getItem('showReplies')) || {};
-    setShowReplies(storedReplies);
+  }, [postId]);
+
+
+  // 2️⃣ Load persisted reply-toggle state once
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('showReplies')) || {};
+    setShowReplies(stored);
   }, []);
+
+  
 
   const handleSubmit = async () => {
     if (!commentText.trim()) return;
@@ -43,6 +54,7 @@ const CommentSection = () => {
     setError(null);
 
     const newComment = {
+      postId,
       author: 'Current User',
       avatarUrl: '/default-avatar.png',
       content: commentText.trim(),
@@ -317,4 +329,4 @@ const CommentSection = () => {
   );
 };
 
-export default CommentSection;
+export default Comment;
