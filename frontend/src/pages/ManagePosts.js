@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Comment from "./Comment";
 
 const ManagePosts = () => {
     const [posts, setPosts] = useState([]);
     const [editingPost, setEditingPost] = useState(null);
+    // New state to track which posts have comments visible
+    const [showComments, setShowComments] = useState({});
 
     const fetchPosts = async () => {
         try {
@@ -67,14 +70,30 @@ const ManagePosts = () => {
         fetchPosts();
     }, []);
 
+    // Toggle comment visibility for a specific post
+    const toggleComments = (postId) => {
+        setShowComments(prev => ({
+            ...prev,
+            [postId]: !prev[postId],
+        }));
+    };
+
     const styles = {
+        commentcon: {
+            fontFamily: 'Arial, sans-serif',
+            maxWidth: '900px',
+            margin: '0 auto',
+            backgroundColor: '#fff',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+            marginTop: '40px'
+        },
         container: {
             maxWidth: "800px",
             margin: "2rem auto",
             padding: "2rem",
-            backgroundColor: "#ffffff",
             borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             fontFamily: "Arial, sans-serif",
         },
         header: {
@@ -83,13 +102,12 @@ const ManagePosts = () => {
             color: "#333",
         },
         postList: {
-            marginBottom: "2rem",
+            marginBottom: "0rem",
         },
         postItem: {
             padding: "1rem",
-            border: "1px solid #ddd",
             borderRadius: "4px",
-            marginBottom: "1rem",
+            marginBottom: "0rem",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -138,26 +156,39 @@ const ManagePosts = () => {
 
             <div style={styles.postList}>
                 {posts.map((post) => (
-                    <div key={post.id} style={styles.postItem}>
-                        <div>
-                            <h3>{post.title}</h3>
-                            <p>{post.description}</p>
-                            <small>{post.slogan}</small>
+                    <div key={post.id} style={styles.commentcon}>
+                        <div style={styles.postItem}>
+                            <div>
+                                <h3>{post.title}</h3>
+                                <p>{post.description}</p>
+                                <small>{post.slogan}</small>
+                            </div>
+                            <div>
+                                <button
+                                    style={{ ...styles.button, ...styles.editButton }}
+                                    onClick={() => handleEdit(post)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    style={{ ...styles.button, ...styles.deleteButton }}
+                                    onClick={() => handleDelete(post.id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button
-                                style={{ ...styles.button, ...styles.editButton }}
-                                onClick={() => handleEdit(post)}
-                            >
-                                Edit
-                            </button>
-                            <button
-                                style={{ ...styles.button, ...styles.deleteButton }}
-                                onClick={() => handleDelete(post.id)}
-                            >
-                                Delete
-                            </button>
-                        </div>
+
+                        {/* Toggle Show/Hide Comments */}
+                        <button
+                            style={{ ...styles.button, ...styles.editButton }}
+                            onClick={() => toggleComments(post.id)}
+                        >
+                            {showComments[post.id] ? 'Hide Comments' : 'Show Comments'}
+                        </button>
+
+                        {/* Conditionally render Comment component */}
+                        {showComments[post.id] && <Comment postId={post.id} />}
                     </div>
                 ))}
             </div>
