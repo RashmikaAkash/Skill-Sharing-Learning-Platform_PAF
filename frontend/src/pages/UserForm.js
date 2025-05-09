@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { createUser } from "../api";
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
 
 const UserForm = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState({
         name: "",
         username: "",
@@ -56,30 +58,14 @@ const UserForm = () => {
             localStorage.setItem("userEmail", user.email);
             setSuccess("Profile Created Successfully!");
 
-            Swal.fire({
+            await Swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Profile Created Successfully!",
             });
 
-            setUser({
-                name: "",
-                username: "",
-                password: "",
-                email: "",
-                age: "",
-                location: "",
-                bio: "",
-                profilePhoto: null,
-                coverPhoto: null
-            });
-
-            setPreview({
-                profilePhoto: null,
-                coverPhoto: null
-            });
-
-            document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
+            // Redirect to login page after successful registration
+            navigate('/login');
 
         } catch (error) {
             console.error("Error details:", error);
@@ -104,6 +90,7 @@ const UserForm = () => {
             });
         }
     };
+
 
     // Inline styles
     const styles = {
