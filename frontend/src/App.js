@@ -11,6 +11,7 @@ import SkillsPage from './pages/SkillsPage';
 import Login from './pages/Login';
 import SharePost from "./pages/SharePost";
 import ManagePosts from "./pages/ManagePosts";
+import EnrollPage from "./pages/EnrollPage";
 import './App.css';
 
 
@@ -37,6 +38,7 @@ const App = () => {
                                     <Route path="/comment" element={<Comment />} />
                                     <Route path="/share-post" element={<SharePost />} />
                                     <Route path="/manage-posts" element={<ManagePosts />} />
+                                    <Route path="/enroll" element={<EnrollPage />} />
                                     {/* Add more routes here */}
                                 </Routes>
                             </Layout>
