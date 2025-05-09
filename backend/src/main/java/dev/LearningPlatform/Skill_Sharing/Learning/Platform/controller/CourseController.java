@@ -27,8 +27,13 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> courses = courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
+        try {
+            List<Course> courses = courseService.getAllCourses();
+            return ResponseEntity.ok(courses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @GetMapping("/{id}")

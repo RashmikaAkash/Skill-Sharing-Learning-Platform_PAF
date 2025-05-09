@@ -17,6 +17,7 @@ public class CourseService {
     }
 
     public Course createCourse(Course course) {
+        validateProgress(course.getProgress());
         return courseRepository.save(course);
     }
 
@@ -38,6 +39,7 @@ public class CourseService {
             course.setStartDate(updatedCourse.getStartDate());
             course.setDuration(updatedCourse.getDuration());
             course.setCourseType(updatedCourse.getCourseType());
+            validateProgress(updatedCourse.getProgress());
             course.setProgress(updatedCourse.getProgress());
             return courseRepository.save(course);
         } else {
@@ -50,6 +52,12 @@ public class CourseService {
             courseRepository.deleteById(id);
         } else {
             throw new IllegalArgumentException("Course not found with ID: " + id);
+        }
+    }
+
+    private void validateProgress(int progress) {
+        if (progress < 0 || progress > 100) {
+            throw new IllegalArgumentException("Progress must be between 0 and 100.");
         }
     }
 }

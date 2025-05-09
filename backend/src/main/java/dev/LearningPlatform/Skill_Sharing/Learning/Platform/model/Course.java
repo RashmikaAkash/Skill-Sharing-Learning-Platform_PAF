@@ -27,7 +27,7 @@ public class Course {
     @NotBlank(message = "Course type is required")
     private String courseType;
 
-    private String progress; // e.g., "Not Started", "In Progress", "Completed"
+    private int progress; // Progress as an integer (0 to 100)
 
     // Getters and setters
     public String getId() {
@@ -86,11 +86,11 @@ public class Course {
         this.courseType = courseType;
     }
 
-    public String getProgress() {
+    public int getProgress() {
         return progress;
     }
 
-    public void setProgress(String progress) {
+    public void setProgress(int progress) {
         this.progress = progress;
     }
 }
