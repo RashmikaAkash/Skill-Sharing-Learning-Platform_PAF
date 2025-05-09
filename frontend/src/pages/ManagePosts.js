@@ -6,7 +6,7 @@ import Comment from "./Comment";
 const ManagePosts = () => {
     const [posts, setPosts] = useState([]);
     const [editingPost, setEditingPost] = useState(null);
-    // New state to track which posts have comments visible
+    // State to track which posts have comments visible
     const [showComments, setShowComments] = useState({});
 
     const fetchPosts = async () => {
@@ -78,86 +78,40 @@ const ManagePosts = () => {
         }));
     };
 
-    const styles = {
-        commentcon: {
-            fontFamily: 'Arial, sans-serif',
-            maxWidth: '900px',
-            margin: '0 auto',
-            backgroundColor: '#fff',
-            borderRadius: '12px',
-            padding: '20px',
-            boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-            marginTop: '40px'
-        },
-        container: {
+    return (
+        <div style={{
             maxWidth: "800px",
             margin: "2rem auto",
             padding: "2rem",
             borderRadius: "8px",
-            fontFamily: "Arial, sans-serif",
-        },
-        header: {
-            textAlign: "center",
-            marginBottom: "1.5rem",
-            color: "#333",
-        },
-        postList: {
-            marginBottom: "0rem",
-        },
-        postItem: {
-            padding: "1rem",
-            borderRadius: "4px",
-            marginBottom: "0rem",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-        },
-        button: {
-            padding: "0.5rem 1rem",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-        },
-        editButton: {
-            backgroundColor: "#007bff",
-            color: "white",
-        },
-        deleteButton: {
-            backgroundColor: "#dc3545",
-            color: "white",
-        },
-        form: {
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-        },
-        input: {
-            padding: "0.75rem",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
-            fontSize: "1rem",
-        },
-        message: {
-            textAlign: "center",
-            marginTop: "1rem",
-            fontSize: "1rem",
-        },
-        error: {
-            color: "red",
-        },
-        success: {
-            color: "green",
-        },
-    };
+            fontFamily: "Arial, sans-serif"
+        }}>
+            <h2 style={{
+                textAlign: "center",
+                marginBottom: "1.5rem",
+                color: "#333"
+            }}>Manage Posts</h2>
 
-    return (
-        <div style={styles.container}>
-            <h2 style={styles.header}>Manage Posts</h2>
-
-            <div style={styles.postList}>
+            <div>
                 {posts.map((post) => (
-                    <div key={post.id} style={styles.commentcon}>
-                        <div style={styles.postItem}>
+                    <div key={post.id} style={{
+                        fontFamily: 'Arial, sans-serif',
+                        maxWidth: '900px',
+                        margin: '0 auto',
+                        backgroundColor: '#fff',
+                        borderRadius: '12px',
+                        padding: '20px',
+                        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+                        marginTop: '40px'
+                    }}>
+                        <div style={{
+                            padding: "1rem",
+                            borderRadius: "4px",
+                            marginBottom: "0rem",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center"
+                        }}>
                             <div>
                                 <h3>{post.title}</h3>
                                 <p>{post.description}</p>
@@ -165,13 +119,28 @@ const ManagePosts = () => {
                             </div>
                             <div>
                                 <button
-                                    style={{ ...styles.button, ...styles.editButton }}
+                                    style={{
+                                        padding: "0.5rem 1rem",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        backgroundColor: "#007bff",
+                                        color: "white",
+                                        marginRight: "5px"
+                                    }}
                                     onClick={() => handleEdit(post)}
                                 >
                                     Edit
                                 </button>
                                 <button
-                                    style={{ ...styles.button, ...styles.deleteButton }}
+                                    style={{
+                                        padding: "0.5rem 1rem",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        backgroundColor: "#dc3545",
+                                        color: "white"
+                                    }}
                                     onClick={() => handleDelete(post.id)}
                                 >
                                     Delete
@@ -181,7 +150,15 @@ const ManagePosts = () => {
 
                         {/* Toggle Show/Hide Comments */}
                         <button
-                            style={{ ...styles.button, ...styles.editButton }}
+                            style={{
+                                padding: "0.5rem 1rem",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                                backgroundColor: "#007bff",
+                                color: "white",
+                                marginTop: "10px"
+                            }}
                             onClick={() => toggleComments(post.id)}
                         >
                             {showComments[post.id] ? 'Hide Comments' : 'Show Comments'}
@@ -194,20 +171,35 @@ const ManagePosts = () => {
             </div>
 
             {editingPost && (
-                <form onSubmit={handleUpdate} style={styles.form}>
+                <form onSubmit={handleUpdate} style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    marginTop: "2rem"
+                }}>
                     <input
                         type="text"
                         placeholder="Title"
                         value={editingPost.title}
                         onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })}
-                        style={styles.input}
+                        style={{
+                            padding: "0.75rem",
+                            border: "1px solid #ddd",
+                            borderRadius: "4px",
+                            fontSize: "1rem"
+                        }}
                         required
                     />
                     <textarea
                         placeholder="Description"
                         value={editingPost.description}
                         onChange={(e) => setEditingPost({ ...editingPost, description: e.target.value })}
-                        style={styles.input}
+                        style={{
+                            padding: "0.75rem",
+                            border: "1px solid #ddd",
+                            borderRadius: "4px",
+                            fontSize: "1rem"
+                        }}
                         rows="4"
                         required
                     />
@@ -216,10 +208,22 @@ const ManagePosts = () => {
                         placeholder="Slogan"
                         value={editingPost.slogan}
                         onChange={(e) => setEditingPost({ ...editingPost, slogan: e.target.value })}
-                        style={styles.input}
+                        style={{
+                            padding: "0.75rem",
+                            border: "1px solid #ddd",
+                            borderRadius: "4px",
+                            fontSize: "1rem"
+                        }}
                         required
                     />
-                    <button type="submit" style={{ ...styles.button, ...styles.editButton }}>
+                    <button type="submit" style={{
+                        padding: "0.5rem 1rem",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        backgroundColor: "#007bff",
+                        color: "white"
+                    }}>
                         Update Post
                     </button>
                 </form>
