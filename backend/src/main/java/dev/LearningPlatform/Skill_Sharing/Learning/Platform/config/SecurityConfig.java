@@ -1,60 +1,104 @@
 package dev.LearningPlatform.Skill_Sharing.Learning.Platform.config;
+
+import dev.LearningPlatform.Skill_Sharing.Learning.Platform.security.MongoUserDetailsService;
+import dev.LearningPlatform.Skill_Sharing.Learning.Platform.security.JwtAuthenticationFilter;
 import dev.LearningPlatform.Skill_Sharing.Learning.Platform.security.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-    @Autowired
-    private UserDetailsService userDetailsService;
+  private final JwtUtil jwtUtil;
+  private final MongoUserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+  public SecurityConfig(JwtUtil jwtUtil, MongoUserDetailsService userDetailsService) {
+    this.jwtUtil = jwtUtil;
+    this.userDetailsService = userDetailsService;
+  }
 
-    @Autowired
-    private CorsConfigurationSource corsConfigurationSource;
+  // --- 1) Define CORS policy bean ---
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:3000"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-          .cors(cors -> cors.configurationSource(corsConfigurationSource))
-          .csrf(cs -> cs.disable())
-          .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-          .authorizeHttpRequests(auth -> auth
-              .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-              .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-              .requestMatchers("/", "/api/users/**", "/api/comments/**", "/api/posts/**").permitAll()
-              .anyRequest().authenticated()
-          )
-          .addFilterBefore(
-              new JwtAuthenticationFilter(jwtUtil, userDetailsService),
-              org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class
-          );
-        return http.build();
-    }
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
 
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                   .userDetailsService(userDetailsService)
-                   .passwordEncoder(passwordEncoder())
-                   .and()
-                   .build();
-    }
+  // --- 2) Security filter chain ---
+  @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  http
+    .cors(Customizer.withDefaults())
+    .csrf(csrf -> csrf.disable())
+    .sessionManagement(sm ->
+      sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .authorizeHttpRequests(auth -> auth
+      // allow preflight
+      .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+    
+      // Spring Boot error path
+      .requestMatchers("/error").permitAll()
+    
+      // PUBLIC: comments endpoints
+      .requestMatchers("/api/comments/**").permitAll()
+    
+      // PUBLIC: posts endpoints
+      .requestMatchers("/api/posts/**").permitAll()
+    
+      // PUBLIC: user endpoints (e.g. list/fetch users)
+      .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+    
+      // PUBLIC: serve uploaded user files (images)
+      .requestMatchers(HttpMethod.GET, "/api/users/files/**").permitAll()
+    
+      // login
+      .requestMatchers("/api/auth/login").permitAll()
+    
+      // everything else authenticated
+      .anyRequest().authenticated()
+    )
+    
+    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+  return http.build();
+}
+
+
+
+  // --- 3) Expose AuthenticationManager for the login controller ---
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    return config.getAuthenticationManager();
+  }
+   @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 }
