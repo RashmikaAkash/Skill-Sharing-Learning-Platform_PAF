@@ -92,4 +92,11 @@ public class CommentService {
         }
         return null;
     }
+
+    public List<Comment> getCommentsForPost(String postId) {
+        return commentRepo.findByPostIdAndReplyFalseOrderByCreatedAtDesc(postId);
+    }
+
+    
+      
 }

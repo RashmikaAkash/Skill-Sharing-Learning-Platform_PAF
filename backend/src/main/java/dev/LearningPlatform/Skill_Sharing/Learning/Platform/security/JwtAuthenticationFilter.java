@@ -1,6 +1,5 @@
-package dev.LearningPlatform.Skill_Sharing.Learning.Platform.config;
+package dev.LearningPlatform.Skill_Sharing.Learning.Platform.security;
 
-import dev.LearningPlatform.Skill_Sharing.Learning.Platform.security.JwtUtil;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

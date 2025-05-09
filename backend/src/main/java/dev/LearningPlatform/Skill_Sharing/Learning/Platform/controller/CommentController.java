@@ -112,4 +112,11 @@ public class CommentController {
         Comment savedReply = svc.create(reply);
         return ResponseEntity.status(201).body(savedReply);
     }
+
+    // GET /api/comments/post/{postId}
+    @GetMapping("/post/{postId}")
+        public List<Comment> listCommentsByPost(@PathVariable String postId) {
+        return svc.getCommentsForPost(postId);
+    }
+
 }
