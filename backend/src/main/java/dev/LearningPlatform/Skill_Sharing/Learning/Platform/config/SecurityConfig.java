@@ -51,34 +51,44 @@ public class SecurityConfig {
 
   // --- 2) Security filter chain ---
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
 
-    http
-      .cors(Customizer.withDefaults())
-      .csrf(csrf -> csrf.disable())
-      .sessionManagement(sm ->
-        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+  http
+    .cors(Customizer.withDefaults())
+    .csrf(csrf -> csrf.disable())
+    .sessionManagement(sm ->
+      sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(auth -> auth
-        // allow preflight
-        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+      // allow preflight
+      .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+    
+      // Spring Boot error path
+      .requestMatchers("/error").permitAll()
+    
+      // PUBLIC: comments endpoints
+      .requestMatchers("/api/comments/**").permitAll()
+    
+      // PUBLIC: posts endpoints
+      .requestMatchers("/api/posts/**").permitAll()
+    
+      // PUBLIC: user endpoints (e.g. list/fetch users)
+      .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+    
+      // PUBLIC: serve uploaded user files (images)
+      .requestMatchers(HttpMethod.GET, "/api/users/files/**").permitAll()
+    
+      // login
+      .requestMatchers("/api/auth/login").permitAll()
+    
+      // everything else authenticated
+      .anyRequest().authenticated()
+    )
+    
+    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // PUBLIC: comments endpoints
-        .requestMatchers("/api/comments/**").permitAll()
-
-        // PUBLIC: posts endpoints (all verbs: GET, POST, PUT, DELETE)
-        .requestMatchers("/api/posts/**").permitAll()
-
-        // LOGIN still open
-        .requestMatchers("/api/auth/login").permitAll()
-
-        // anything else requires JWT
-        .anyRequest().authenticated()
-      )
-      .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-    return http.build();
-  }
+  return http.build();
+}
 
 
 
