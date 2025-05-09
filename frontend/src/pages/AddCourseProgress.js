@@ -41,128 +41,301 @@ const AddCourseProgress = () => {
     };
 
     const styles = {
-        container: {
-            maxWidth: "600px",
-            margin: "2rem auto",
-            padding: "2rem",
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            fontFamily: "Arial, sans-serif",
-        },
-        header: {
-            textAlign: "center",
-            marginBottom: "1.5rem",
-            color: "#333",
-        },
-        form: {
+        pageContainer: {
+            minHeight: "100vh",
             display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem",
+            backgroundImage: "linear-gradient(to right, #e0f2fe, #f3e8ff)",
+            fontFamily: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        },
+        container: {
+            width: "100%",
+            maxWidth: "600px",
+            backgroundColor: "#ffffff",
+            borderRadius: "16px",
+            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+            overflow: "hidden",
+            transform: "translateY(0)",
+            transition: "transform 0.3s, box-shadow 0.3s",
+        },
+        headerSection: {
+            padding: "1.5rem",
+            backgroundImage: "linear-gradient(to right, #2563eb, #9333ea)",
+            color: "white",
+            textAlign: "center"
+        },
+        headerText: {
+            fontSize: "28px",
+            fontWeight: "700",
+            margin: 0
+        },
+        formSection: {
+            padding: "2rem"
+        },
+        errorBox: {
+            marginBottom: "1rem",
+            padding: "0.75rem",
+            backgroundColor: "#fee2e2",
+            borderLeftWidth: "4px",
+            borderLeftColor: "#ef4444",
+            color: "#b91c1c"
+        },
+        formGroup: {
+            marginBottom: "1.5rem"
+        },
+        label: {
+            display: "block",
+            marginBottom: "0.5rem",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+            color: "#374151"
         },
         input: {
-            padding: "0.75rem",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
+            width: "100%",
+            padding: "0.75rem 1rem",
+            border: "1px solid #d1d5db",
+            borderRadius: "0.5rem",
             fontSize: "1rem",
+            transition: "all 0.3s",
+            outline: "none"
+        },
+        inputFocus: {
+            borderColor: "#3b82f6",
+            boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.2)"
         },
         select: {
-            padding: "0.75rem",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
+            width: "100%",
+            padding: "0.75rem 1rem",
+            border: "1px solid #d1d5db",
+            borderRadius: "0.5rem",
             fontSize: "1rem",
+            backgroundColor: "white",
+            transition: "all 0.3s",
+            outline: "none"
         },
-        button: {
+        twoColumnLayout: {
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "1rem"
+        },
+        progressContainer: {
+            marginBottom: "1.5rem"
+        },
+        progressLabel: {
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "0.5rem",
+            fontSize: "0.875rem",
+            fontWeight: "500",
+            color: "#374151"
+        },
+        rangeInput: {
+            width: "100%",
+            height: "8px",
+            appearance: "none",
+            backgroundColor: "#e5e7eb",
+            borderRadius: "9999px",
+            outline: "none",
+            margin: "1rem 0"
+        },
+        progressBar: {
+            width: "100%",
+            height: "8px",
+            backgroundColor: "#e5e7eb",
+            borderRadius: "9999px",
+            overflow: "hidden",
+            marginTop: "0.5rem"
+        },
+        progressFill: {
+            height: "100%",
+            backgroundImage: "linear-gradient(to right, #3b82f6, #8b5cf6)",
+            borderRadius: "9999px",
+            transition: "width 0.5s ease"
+        },
+        submitButton: {
+            width: "100%",
             padding: "1rem",
-            backgroundColor: "#007bff",
+            backgroundImage: "linear-gradient(to right, #2563eb, #9333ea)",
             color: "white",
-            border: "none",
-            borderRadius: "4px",
+            fontWeight: "700",
             fontSize: "1rem",
+            border: "none",
+            borderRadius: "0.5rem",
             cursor: "pointer",
-            transition: "background-color 0.2s",
+            boxShadow: "0 4px 6px rgba(37, 99, 235, 0.2)",
+            transition: "all 0.3s"
         },
-        buttonHover: {
-            backgroundColor: "#0056b3",
-        },
-        error: {
-            color: "red",
-            textAlign: "center",
-        },
+        submitButtonHover: {
+            transform: "translateY(2px)",
+            boxShadow: "0 2px 4px rgba(37, 99, 235, 0.2)"
+        }
     };
 
     return (
-        <div style={styles.container}>
-            <h2 style={styles.header}>Add Course Progress</h2>
-            {error && <p style={styles.error}>{error}</p>}
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <input
-                    type="text"
-                    placeholder="Course Name"
-                    value={course.courseName}
-                    onChange={(e) => setCourse({ ...course, courseName: e.target.value })}
-                    style={styles.input}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Course Level"
-                    value={course.courseLevel}
-                    onChange={(e) => setCourse({ ...course, courseLevel: e.target.value })}
-                    style={styles.input}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Institute"
-                    value={course.institute}
-                    onChange={(e) => setCourse({ ...course, institute: e.target.value })}
-                    style={styles.input}
-                    required
-                />
-                <input
-                    type="date"
-                    placeholder="Start Date"
-                    value={course.startDate}
-                    onChange={(e) => setCourse({ ...course, startDate: e.target.value })}
-                    style={styles.input}
-                    required
-                />
-                <input
-                    type="number"
-                    placeholder="Duration (weeks)"
-                    value={course.duration}
-                    onChange={(e) => setCourse({ ...course, duration: e.target.value })}
-                    style={styles.input}
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Course Type (e.g., Online, In-Person)"
-                    value={course.courseType}
-                    onChange={(e) => setCourse({ ...course, courseType: e.target.value })}
-                    style={styles.input}
-                    required
-                />
-                <input
-                    type="number"
-                    placeholder="Progress (%)"
-                    value={course.progress}
-                    onChange={(e) => setCourse({ ...course, progress: parseInt(e.target.value, 10) })}
-                    style={styles.input}
-                    min="0"
-                    max="100"
-                    required
-                />
-                <button
-                    type="submit"
-                    style={styles.button}
-                    onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
-                    onMouseOut={(e) => (e.target.style.backgroundColor = styles.button.backgroundColor)}
-                >
-                    Add Course
-                </button>
-            </form>
+        <div style={styles.pageContainer}>
+            <div 
+                style={styles.container}
+                onMouseOver={(e) => e.currentTarget.style.boxShadow = "0 15px 30px rgba(0, 0, 0, 0.15)"}
+                onMouseOut={(e) => e.currentTarget.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.1)"}
+            >
+                <div style={styles.headerSection}>
+                    <h2 style={styles.headerText}>Course Progress Tracker</h2>
+                </div>
+                
+                <div style={styles.formSection}>
+                    {error && <div style={styles.errorBox}><p style={{margin: 0}}>{error}</p></div>}
+                    
+                    <form onSubmit={handleSubmit}>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Course Name</label>
+                            <input
+                                type="text"
+                                placeholder="Enter course name"
+                                value={course.courseName}
+                                onChange={(e) => setCourse({ ...course, courseName: e.target.value })}
+                                style={styles.input}
+                                onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = "#d1d5db";
+                                    e.target.style.boxShadow = "none";
+                                }}
+                                required
+                            />
+                        </div>
+                        
+                        <div style={styles.twoColumnLayout}>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Course Level</label>
+                                <input
+                                    type="text"
+                                    placeholder="Beginner, Intermediate..."
+                                    value={course.courseLevel}
+                                    onChange={(e) => setCourse({ ...course, courseLevel: e.target.value })}
+                                    style={styles.input}
+                                    onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "#d1d5db";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                    required
+                                />
+                            </div>
+                            
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Institute</label>
+                                <input
+                                    type="text"
+                                    placeholder="School or platform name"
+                                    value={course.institute}
+                                    onChange={(e) => setCourse({ ...course, institute: e.target.value })}
+                                    style={styles.input}
+                                    onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "#d1d5db";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        
+                        <div style={styles.twoColumnLayout}>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Start Date</label>
+                                <input
+                                    type="date"
+                                    value={course.startDate}
+                                    onChange={(e) => setCourse({ ...course, startDate: e.target.value })}
+                                    style={styles.input}
+                                    onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "#d1d5db";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                    required
+                                />
+                            </div>
+                            
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Duration (weeks)</label>
+                                <input
+                                    type="number"
+                                    placeholder="E.g. 12"
+                                    value={course.duration}
+                                    onChange={(e) => setCourse({ ...course, duration: e.target.value })}
+                                    style={styles.input}
+                                    onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                                    onBlur={(e) => {
+                                        e.target.style.borderColor = "#d1d5db";
+                                        e.target.style.boxShadow = "none";
+                                    }}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Course Type</label>
+                            <select
+                                value={course.courseType}
+                                onChange={(e) => setCourse({ ...course, courseType: e.target.value })}
+                                style={styles.select}
+                                onFocus={(e) => Object.assign(e.target.style, styles.inputFocus)}
+                                onBlur={(e) => {
+                                    e.target.style.borderColor = "#d1d5db";
+                                    e.target.style.boxShadow = "none";
+                                }}
+                                required
+                            >
+                                <option value="">Select Course Type</option>
+                                <option value="Online">Online</option>
+                                <option value="In-Person">In-Person</option>
+                                <option value="Hybrid">Hybrid</option>
+                                <option value="Self-Paced">Self-Paced</option>
+                            </select>
+                        </div>
+                        
+                        <div style={styles.progressContainer}>
+                            <div style={styles.progressLabel}>
+                                <span>Progress</span>
+                                <span>{course.progress}%</span>
+                            </div>
+                            <input
+                                type="range"
+                                value={course.progress}
+                                onChange={(e) => setCourse({ ...course, progress: parseInt(e.target.value, 10) })}
+                                style={styles.rangeInput}
+                                min="0"
+                                max="100"
+                                step="5"
+                                required
+                            />
+                            <div style={styles.progressBar}>
+                                <div 
+                                    style={{
+                                        ...styles.progressFill,
+                                        width: `${course.progress}%`
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                        
+                        <button
+                            type="submit"
+                            style={styles.submitButton}
+                            onMouseOver={(e) => Object.assign(e.target.style, styles.submitButtonHover)}
+                            onMouseOut={(e) => {
+                                e.target.style.transform = "translateY(0)";
+                                e.target.style.boxShadow = "0 4px 6px rgba(37, 99, 235, 0.2)";
+                            }}
+                        >
+                            Add Course
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 };
