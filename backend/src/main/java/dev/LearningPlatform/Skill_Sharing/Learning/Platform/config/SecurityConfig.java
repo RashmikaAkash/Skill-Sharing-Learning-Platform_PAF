@@ -62,28 +62,32 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
       .authorizeHttpRequests(auth -> auth
       // allow preflight
       .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-    
+
       // Spring Boot error path
       .requestMatchers("/error").permitAll()
-    
+
       // PUBLIC: comments endpoints
       .requestMatchers("/api/comments/**").permitAll()
-    
+
       // PUBLIC: posts endpoints
       .requestMatchers("/api/posts/**").permitAll()
-    
-      // PUBLIC: user endpoints (e.g. list/fetch users)
+
+      // PUBLIC: user “list/fetch” (GET) endpoints
       .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
-    
-      // PUBLIC: serve uploaded user files (images)
+
+      // PUBLIC: serve uploaded user files
       .requestMatchers(HttpMethod.GET, "/api/users/files/**").permitAll()
-    
+
+      // **PUBLIC: registration endpoint**
+      .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+
       // login
       .requestMatchers("/api/auth/login").permitAll()
-    
+
       // everything else authenticated
       .anyRequest().authenticated()
-    )
+  )
+
     
     .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
