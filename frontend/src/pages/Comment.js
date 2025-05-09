@@ -191,7 +191,7 @@ const CommentSection = () => {
   const formatDate = (iso) => new Date(iso).toLocaleString();
 
   const styles = {
-    container: { fontFamily: 'Arial, sans-serif', maxWidth: '900px', margin: '0 auto', backgroundColor: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 0 10px rgba(0,0,0,0.1)', marginTop: '100px' },
+    container: { fontFamily: 'Arial, sans-serif', maxWidth: '900px', margin: '0 auto', backgroundColor: '#fff', borderRadius: '12px', padding: '20px',  marginTop: '30px' },
     commentForm: { backgroundColor: '#f5f5f5', borderRadius: '8px', padding: '20px', marginBottom: '20px' },
     textarea: { width: '100%', border: 'none', backgroundColor: 'transparent', resize: 'none', height: '60px', outline: 'none', color: '#333', fontSize: '16px' },
     toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' },
