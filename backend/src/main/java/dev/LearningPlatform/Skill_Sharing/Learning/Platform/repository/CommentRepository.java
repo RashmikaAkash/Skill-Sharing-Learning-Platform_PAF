@@ -18,6 +18,10 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
     // Count the number of replies for a specific parent comment
     long countByReplyTo(String replyTo);
 
+
+    // new: fetch only top-level comments for one post, newest first
+    List<Comment> findByPostIdAndReplyFalseOrderByCreatedAtDesc(String postId);
+
     // Optional future extensions — examples:
     // List<Comment> findByAuthor(String author);
     // List<Comment> findByVerifiedTrueOrderByCreatedAtDesc();
