@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,92 +18,70 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-  private final JwtUtil jwtUtil;
-  private final MongoUserDetailsService userDetailsService;
 
-  public SecurityConfig(JwtUtil jwtUtil, MongoUserDetailsService userDetailsService) {
-    this.jwtUtil = jwtUtil;
-    this.userDetailsService = userDetailsService;
-  }
+    private final JwtUtil jwtUtil;
+    private final MongoUserDetailsService userDetailsService;
 
-  // --- 1) Define CORS policy bean ---
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://localhost:3000"));
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowCredentials(true);
+    public SecurityConfig(JwtUtil jwtUtil, MongoUserDetailsService userDetailsService) {
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
+    }
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
-    return source;
-  }
+    // --- 1) Define CORS policy ---
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // Allow frontend origin
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
 
-  // --- 2) Security filter chain ---
-  @Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-  JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
-  http
-    .cors(Customizer.withDefaults())
-    .csrf(csrf -> csrf.disable())
-    .sessionManagement(sm ->
-      sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-      .authorizeHttpRequests(auth -> auth
-      // allow preflight
-      .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+    // --- 2) Security filter chain ---
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
 
-      // Spring Boot error path
-      .requestMatchers("/error").permitAll()
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
+            .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless sessions
+            .authorizeHttpRequests(auth -> auth
+                // Allow public endpoints
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight requests
+                .requestMatchers("/api/auth/login").permitAll() // Login endpoint
+                .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // User registration
+                .requestMatchers(HttpMethod.GET, "/api/users/files/**").permitAll() // Serve user files
+                .requestMatchers("/api/posts/**").permitAll() // Public posts
+                .requestMatchers(HttpMethod.POST, "/api/enrollments").permitAll() // Enrollment creation
+                .requestMatchers("/api/courses/**").permitAll() // Allow all requests to /api/courses
+                .requestMatchers("/error").permitAll() // Spring Boot error path
 
-      // PUBLIC: comments endpoints
-      .requestMatchers("/api/comments/**").permitAll()
+                // Secure all other endpoints
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
-      // PUBLIC: posts endpoints
-      .requestMatchers("/api/posts/**").permitAll()
+        return http.build();
+    }
 
-      // PUBLIC: user “list/fetch” (GET) endpoints
-      .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
+    // --- 3) Expose AuthenticationManager for login ---
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
-      // PUBLIC: serve uploaded user files
-      .requestMatchers(HttpMethod.GET, "/api/users/files/**").permitAll()
-
-      // **PUBLIC: registration endpoint**
-      .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-
-      .requestMatchers(HttpMethod.POST, "/api/enrollments").permitAll()
-
-      // login
-      .requestMatchers("/api/auth/login").permitAll()
-
-      // everything else authenticated
-      .anyRequest().authenticated()
-  )
-
-    
-    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-  return http.build();
-}
-
-
-
-  // --- 3) Expose AuthenticationManager for the login controller ---
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
-  }
-   @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    // --- 4) Password encoder ---
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
