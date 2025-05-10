@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/courses/**").permitAll() // Allow all requests to /api/courses
                 .requestMatchers("/error").permitAll() // Spring Boot error path
                 .requestMatchers("/api/comments/**").permitAll() // Public posts
+                .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll() 
 
                 // Secure all other endpoints
                 .anyRequest().authenticated()
