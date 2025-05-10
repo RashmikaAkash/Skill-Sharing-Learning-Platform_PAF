@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import web from '../images/web.jpg';
@@ -10,10 +11,10 @@ import le from '../images/le.png';
 import background from '../images/background.jpg';
 import HowItWorks from '../components/HowItWorks';
 
-
 const SkillSharingPlatform = () => {
   const [email, setEmail] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const categories = [
     { id: 'all', name: 'All Courses' },
@@ -202,15 +203,18 @@ const SkillSharingPlatform = () => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontWeight: 'bold', fontSize: '18px' }}>${course.price}</span>
-                  <button style={{
-                    backgroundColor: '#4a4a8a',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '6px 12px',
-                    fontSize: '14px',
-                    cursor: 'pointer'
-                  }}>
+                  <button
+                    onClick={() => navigate('/enroll')} // Navigate to /enroll on button click
+                    style={{
+                      backgroundColor: '#4a4a8a',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '6px 12px',
+                      fontSize: '14px',
+                      cursor: 'pointer'
+                    }}
+                  >
                     Enroll Now
                   </button>
                 </div>
