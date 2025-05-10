@@ -58,12 +58,13 @@ public class SecurityConfig {
                 // Allow public endpoints
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight requests
                 .requestMatchers("/api/auth/login").permitAll() // Login endpoint
-                .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // User registration
+                .requestMatchers(HttpMethod.GET, "/api/users").permitAll() // User registration
                 .requestMatchers(HttpMethod.GET, "/api/users/files/**").permitAll() // Serve user files
                 .requestMatchers("/api/posts/**").permitAll() // Public posts
                 .requestMatchers(HttpMethod.POST, "/api/enrollments").permitAll() // Enrollment creation
                 .requestMatchers("/api/courses/**").permitAll() // Allow all requests to /api/courses
                 .requestMatchers("/error").permitAll() // Spring Boot error path
+                .requestMatchers("/api/comments/**").permitAll() // Public posts
 
                 // Secure all other endpoints
                 .anyRequest().authenticated()
