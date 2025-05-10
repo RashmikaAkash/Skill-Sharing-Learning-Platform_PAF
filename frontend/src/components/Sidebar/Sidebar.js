@@ -11,13 +11,9 @@ const Sidebar = () => {
     const menuItems = [
         { path: '/', icon: 'fas fa-home', label: 'Home' },
         { path: '/profile', icon: 'fas fa-user', label: 'Profile' },
-        { path: '/courses', icon: 'fas fa-book', label: 'Courses' },
-        { path: '/mentors', icon: 'fas fa-chalkboard-teacher', label: 'Mentors' },
+        { path: '/course-progress', icon: 'fas fa-book', label: 'Courses Progress' },
+        { path: '/addcourse', icon: 'fas fa-book', label: 'Add Course' },
         { path: '/skills', icon: 'fas fa-brain', label: 'Skills' },
-        { path: '/messages', icon: 'fas fa-envelope', label: 'Messages' },
-        { path: '/calendar', icon: 'fas fa-calendar-alt', label: 'Calendar' },
-        { path: '/resources', icon: 'fas fa-folder', label: 'Resources' },
-        { path: '/settings', icon: 'fas fa-cog', label: 'Settings' },
         { path: '/share-post', icon: 'fas fa-share-alt', label: 'Share Post' },
         { path: '/manage-posts', icon: 'fas fa-tasks', label: 'Manage Posts' } // New menu item
     ];
