@@ -12,6 +12,8 @@ import Login from './pages/Login';
 import SharePost from "./pages/SharePost";
 import ManagePosts from "./pages/ManagePosts";
 import EnrollPage from "./pages/EnrollPage";
+import CourseProgress from "./pages/CourseProgress";
+import AddCourseProgress from "./pages/AddCourseProgress";
 import './App.css';
 
 
@@ -40,6 +42,10 @@ const App = () => {
                                     <Route path="/manage-posts" element={<ManagePosts />} />
                                     <Route path="/enroll" element={<EnrollPage />} />
                                     {/* Add more routes here */}
+                                    <Route path="/course-progress" element={<CourseProgress />} />
+                                    {/* Redirect to home if no match */}
+                                    <Route path="/addcourse" element={<AddCourseProgress />} />
+
                                 </Routes>
                             </Layout>
                         ) : (
